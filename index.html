@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NOVA — AI Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#020408;--surface:#080d14;--surface2:#0d1520;--border:rgba(0,200,255,0.12);--borderB:rgba(0,200,255,0.35);--accent:#00c8ff;--accent2:#7b4fff;--accent3:#00ff9d;--text:#e2eaf4;--muted:#6b7e94;--dim:#3a4a5c;--danger:#ff4560;--warn:#ffa500;--r:12px;--rL:18px;--sidebar:240px;--top:58px;--font:'Inter',sans-serif;--display:'Orbitron',monospace;--mono:'JetBrains Mono',monospace;--t:0.22s cubic-bezier(0.4,0,0.2,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#grid{position:absolute;inset:0;opacity:.06}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.18;animation:orbF 12s ease-in-out infinite alternate}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,#0040ff,transparent 70%);top:-150px;left:-100px;animation-duration:14s}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,#7b4fff,transparent 70%);bottom:-100px;right:-80px;animation-duration:18s;animation-delay:-6s}
+.orb3{width:300px;height:300px;background:radial-gradient(circle,#00c8ff,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:10s;animation-delay:-3s}
+@keyframes orbF{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,20px) scale(1.08)}}
+#boot{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .8s,transform .8s}
+#boot.out{opacity:0;transform:scale(1.05);pointer-events:none}
+.boot-wrap{text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+.boot-logo{position:relative;width:100px;height:100px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.ring{position:absolute;border-radius:50%;border:1.5px solid var(--accent);animation:rP 2s ease-in-out infinite}
+.r1{width:100px;height:100px;opacity:.3}.r2{width:72px;height:72px;opacity:.5;animation-delay:.3s}.r3{width:48px;height:48px;opacity:.8;animation-delay:.6s}
+@keyframes rP{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.boot-n{font-family:var(--display);font-size:28px;font-weight:900;color:var(--accent);text-shadow:0 0 20px var(--accent);z-index:1}
+.boot-title{font-family:var(--display);font-size:36px;font-weight:900;letter-spacing:8px;color:var(--accent);text-shadow:0 0 30px rgba(0,200,255,.5)}
+.boot-sub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.boot-bar{width:280px;height:2px;background:rgba(0,200,255,.1);border-radius:2px;overflow:hidden;margin-top:8px}
+.boot-prog{height:100%;width:0%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;box-shadow:0 0 8px var(--accent);transition:width .3s}
+.boot-status{font-size:11px;color:var(--accent);font-family:var(--mono);opacity:.8;min-height:16px}
+#app{position:fixed;inset:0;z-index:1;display:flex;transition:opacity .5s}
+#app.hidden{opacity:0;pointer-events:none}
+.sidebar{width:var(--sidebar);height:100%;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:transform var(--t),width var(--t);overflow:hidden;z-index:10}
+.sidebar.collapsed{width:0;transform:translateX(-100%);border-right:none}
+.sb-head{display:flex;align-items:center;justify-content:space-between;padding:18px 16px;border-bottom:1px solid var(--border)}
+.logo-sm{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:14px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.ldot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:dp 2s ease-in-out infinite}
+@keyframes dp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.6}}
+.sb-tog{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t);font-size:14px}
+.sb-tog:hover{border-color:var(--borderB);color:var(--accent)}
+.sb-nav{display:flex;flex-direction:column;gap:2px;padding:12px 10px;border-bottom:1px solid var(--border)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;border:1px solid transparent;background:none;color:var(--muted);cursor:pointer;font-size:13px;font-family:var(--font);transition:all var(--t);text-align:left;white-space:nowrap}
+.nav-item:hover{background:rgba(0,200,255,.06);color:var(--text)}
+.nav-item.active{background:rgba(0,200,255,.1);color:var(--accent);border-color:rgba(0,200,255,.15)}
+.sb-section{flex:1;overflow-y:auto;padding:12px 10px}
+.sb-section::-webkit-scrollbar{width:3px}
+.sb-section::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.sec-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;padding:0 4px}
+.hist-list{display:flex;flex-direction:column;gap:2px}
+.hist-empty{font-size:12px;color:var(--dim);padding:8px 4px}
+.hist-item{padding:8px 10px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:all var(--t);border:1px solid transparent}
+.hist-item:hover{background:rgba(0,200,255,.05);border-color:var(--border);color:var(--text)}
+.sb-foot{padding:12px 10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.set-btn{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--border);color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-family:var(--font);transition:all var(--t);width:100%}
+.set-btn:hover{border-color:var(--borderB);color:var(--text)}
+.ver{font-size:10px;color:var(--dim);font-family:var(--mono);padding:0 4px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:var(--top);display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(8,13,20,.8);backdrop-filter:blur(20px);flex-shrink:0;gap:12px}
+.tb-center{flex:1;display:flex;justify-content:center}
+.nova-status{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-family:var(--mono)}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--accent3);box-shadow:0 0 6px var(--accent3);animation:dp 2s ease-in-out infinite}
+.sdot.thinking{background:var(--warn);box-shadow:0 0 6px var(--warn)}
+.sdot.speaking{background:var(--accent);box-shadow:0 0 6px var(--accent)}
+.sdot.error{background:var(--danger);box-shadow:0 0 6px var(--danger);animation:none}
+.tb-actions{display:flex;gap:6px}
+.icon-btn{background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t);font-size:16px}
+.icon-btn:hover{border-color:var(--borderB);color:var(--accent);background:rgba(0,200,255,.06)}
+.chat-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column;scroll-behavior:smooth}
+.chat-wrap::-webkit-scrollbar{width:4px}
+.chat-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:40px 24px;gap:16px}
+.w-avatar{position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.w-pulse{position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(0,200,255,.25);animation:wP 3s ease-in-out infinite}
+@keyframes wP{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.1);opacity:.8}}
+.w-core{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(0,200,255,.15),rgba(123,79,255,.15));border:1px solid var(--borderB);display:flex;align-items:center;justify-content:center;font-size:32px}
+.w-title{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:2px;color:var(--text);text-align:center}
+.w-sub{font-size:13px;color:var(--muted);text-align:center;max-width:400px}
+.sugg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;max-width:480px;width:100%}
+.sugg-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;text-align:left;transition:all var(--t);color:var(--muted);font-size:13px;font-family:var(--font)}
+.sugg-card:hover{border-color:rgba(0,200,255,.35);background:rgba(0,200,255,.06);color:var(--text);transform:translateY(-2px)}
+.card-ico{font-size:18px;flex-shrink:0}
+.msgs{display:flex;flex-direction:column;gap:0;padding:20px 0}
+.msg{display:flex;padding:14px 20px;gap:14px;animation:mFI .3s ease}
+@keyframes mFI{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.msg.assistant{background:rgba(0,200,255,.02);border-bottom:1px solid var(--border)}
+.msg-av{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:2px}
+.msg.user .msg-av{background:linear-gradient(135deg,rgba(123,79,255,.3),rgba(0,200,255,.2));border:1px solid rgba(123,79,255,.4)}
+.msg.assistant .msg-av{background:linear-gradient(135deg,rgba(0,200,255,.15),rgba(0,255,157,.1));border:1px solid rgba(0,200,255,.3)}
+.msg-body{flex:1;min-width:0}
+.msg-role{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:4px;font-family:var(--mono)}
+.msg.user .msg-role{text-align:right;color:rgba(123,79,255,.6)}
+.msg-text{font-size:14px;line-height:1.7;color:var(--text);word-wrap:break-word}
+.msg.user .msg-text{text-align:right;color:rgba(220,235,255,.9)}
+.msg-text code{font-family:var(--mono);font-size:12px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);border-radius:4px;padding:2px 6px;color:var(--accent)}
+.msg-text pre{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:14px;overflow-x:auto;margin:10px 0}
+.msg-text pre code{background:none;border:none;padding:0;color:var(--accent3);font-size:13px}
+.msg-text strong{color:var(--accent);font-weight:500}
+.msg-text h1,.msg-text h2,.msg-text h3{font-family:var(--display);color:var(--accent);margin:16px 0 8px}
+.msg-text h1{font-size:20px}.msg-text h2{font-size:17px}.msg-text h3{font-size:15px}
+.msg-text p{margin:8px 0}.msg-text ul,.msg-text ol{padding-left:20px;margin:8px 0}.msg-text li{margin:4px 0}
+.msg-text blockquote{border-left:3px solid var(--accent2);padding-left:12px;color:var(--muted);margin:10px 0}
+.msg-text table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+.msg-text th{background:rgba(0,200,255,.08);color:var(--accent);padding:8px 10px;text-align:left;border:1px solid var(--border);font-weight:500}
+.msg-text td{padding:7px 10px;border:1px solid var(--border)}
+.msg-text tr:nth-child(even) td{background:rgba(0,200,255,.02)}
+.typing{display:flex;align-items:center;gap:5px;padding:4px 0}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:tB 1.2s ease-in-out infinite}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+@keyframes tB{0%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+.msg-acts{display:flex;gap:6px;margin-top:10px}
+.act-btn{background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font);transition:all var(--t)}
+.act-btn:hover{border-color:var(--borderB);color:var(--accent)}
+.input-area{border-top:1px solid var(--border);background:rgba(8,13,20,.9);backdrop-filter:blur(20px);padding:10px 16px 14px;flex-shrink:0}
+.mode-pills{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.mpill{background:none;border:1px solid var(--border);color:var(--dim);padding:4px 12px;border-radius:20px;cursor:pointer;font-size:11px;font-family:var(--font);transition:all var(--t)}
+.mpill:hover{border-color:var(--borderB);color:var(--muted)}
+.mpill.active{background:rgba(0,200,255,.1);border-color:rgba(0,200,255,.4);color:var(--accent)}
+.input-box{display:flex;align-items:flex-end;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rL);padding:12px 10px 12px 16px;gap:8px;transition:border-color var(--t)}
+.input-box:focus-within{border-color:rgba(0,200,255,.4);box-shadow:0 0 0 3px rgba(0,200,255,.06)}
+#inp{flex:1;background:none;border:none;outline:none;resize:none;color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;min-height:22px;max-height:160px;overflow-y:auto;scrollbar-width:none}
+#inp::-webkit-scrollbar{display:none}
+#inp::placeholder{color:var(--dim)}
+.inp-acts{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.inp-btn{background:none;border:none;color:var(--muted);width:32px;height:32px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t);font-size:16px}
+.inp-btn:hover{background:rgba(0,200,255,.08);color:var(--accent)}
+.inp-btn.enabled{color:var(--accent3);background:rgba(0,255,157,.1)}
+.inp-btn.recording{color:var(--danger);background:rgba(255,69,96,.15);animation:recP 1s ease-in-out infinite}
+@keyframes recP{0%,100%{opacity:1}50%{opacity:.5}}
+.send-btn{background:linear-gradient(135deg,rgba(0,200,255,.2),rgba(123,79,255,.2));border:1px solid rgba(0,200,255,.4);color:var(--accent);width:36px;height:36px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t);font-size:16px}
+.send-btn:hover{background:linear-gradient(135deg,rgba(0,200,255,.35),rgba(123,79,255,.35));box-shadow:0 0 12px rgba(0,200,255,.2);transform:scale(1.05)}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.inp-foot{display:flex;justify-content:space-between;margin-top:8px;padding:0 4px;font-size:11px;color:var(--dim);font-family:var(--mono)}
+.voice-ov{position:fixed;inset:0;z-index:1000;background:rgba(2,4,8,.85);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center}
+.voice-ov.hidden{display:none}
+.voice-modal{display:flex;flex-direction:column;align-items:center;gap:20px}
+.v-rings{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
+.vr{position:absolute;border-radius:50%;border:1.5px solid var(--accent);animation:vR 1.5s ease-in-out infinite}
+.vr1{width:120px;height:120px;opacity:.2}.vr2{width:86px;height:86px;opacity:.4;animation-delay:.2s}.vr3{width:58px;height:58px;opacity:.7;animation-delay:.4s}
+@keyframes vR{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.v-icon{font-size:28px;z-index:1}
+.v-label{font-family:var(--display);font-size:16px;letter-spacing:2px;color:var(--accent)}
+.v-transcript{font-size:14px;color:var(--muted);text-align:center;max-width:320px;min-height:20px;font-style:italic}
+.v-stop{background:rgba(255,69,96,.1);border:1px solid rgba(255,69,96,.4);color:var(--danger);padding:10px 28px;border-radius:20px;cursor:pointer;font-size:13px;font-family:var(--font)}
+.audio-bar{position:fixed;bottom:20px;right:20px;z-index:200;background:var(--surface2);border:1px solid rgba(0,200,255,.3);border-radius:30px;padding:10px 18px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.audio-bar.hidden{display:none}
+.audio-inner{display:flex;align-items:center;gap:12px}
+.audio-lbl{font-size:12px;color:var(--accent);font-family:var(--mono);white-space:nowrap}
+.audio-waves{display:flex;align-items:center;gap:3px}
+.audio-waves span{display:block;width:3px;border-radius:2px;background:var(--accent);animation:aW .8s ease-in-out infinite alternate}
+.audio-waves span:nth-child(1){height:8px}.audio-waves span:nth-child(2){height:16px;animation-delay:.1s}.audio-waves span:nth-child(3){height:22px;animation-delay:.2s}.audio-waves span:nth-child(4){height:14px;animation-delay:.3s}.audio-waves span:nth-child(5){height:10px;animation-delay:.4s}
+@keyframes aW{from{transform:scaleY(.5);opacity:.5}to{transform:scaleY(1);opacity:1}}
+#stop-audio{background:none;border:1px solid rgba(255,69,96,.4);color:var(--danger);padding:5px 12px;border-radius:12px;cursor:pointer;font-size:11px;font-family:var(--mono)}
+.modal-ov{position:fixed;inset:0;z-index:500;background:rgba(2,4,8,.8);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-ov.hidden{display:none}
+.modal{background:var(--surface);border:1px solid var(--borderB);border-radius:var(--rL);width:100%;max-width:520px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+.modal::-webkit-scrollbar{width:3px}
+.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--border)}
+.modal-head h2{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:1px;color:var(--text)}
+.modal-x{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:13px;transition:all var(--t)}
+.modal-x:hover{border-color:var(--danger);color:var(--danger)}
+.modal-body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:18px}
+.set-grp{display:flex;flex-direction:column;gap:6px}
+.set-grp label{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.5px}
+.set-grp input,.set-grp select,.set-grp textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;font-family:var(--mono);outline:none;transition:border-color var(--t);width:100%}
+.set-grp input:focus,.set-grp select:focus,.set-grp textarea:focus{border-color:rgba(0,200,255,.4)}
+.set-grp small{font-size:11px;color:var(--dim);line-height:1.5}
+.tgl-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;font-size:13px;color:var(--muted)}
+.tgl{position:relative;display:inline-block;width:40px;height:22px}
+.tgl input{opacity:0;width:0;height:0}
+.tgl-sl{position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,.1);border-radius:22px;transition:all var(--t);border:1px solid var(--border)}
+.tgl-sl::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:2px;background:var(--muted);border-radius:50%;transition:all var(--t)}
+.tgl input:checked+.tgl-sl{background:rgba(0,200,255,.2);border-color:rgba(0,200,255,.5)}
+.tgl input:checked+.tgl-sl::before{transform:translateX(18px);background:var(--accent)}
+.save-btn{background:linear-gradient(135deg,rgba(0,200,255,.15),rgba(123,79,255,.15));border:1px solid rgba(0,200,255,.4);color:var(--accent);padding:12px;border-radius:10px;cursor:pointer;font-size:13px;font-family:var(--display);letter-spacing:1px;font-weight:600;transition:all var(--t);width:100%;margin-top:4px}
+.save-btn:hover{background:linear-gradient(135deg,rgba(0,200,255,.25),rgba(123,79,255,.25))}
+.free-badge{display:inline-block;background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.3);color:var(--accent3);font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;font-family:var(--mono)}
+.toast-wrap{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--surface2);border:1px solid var(--borderB);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text);animation:tI .3s ease;pointer-events:auto;max-width:300px}
+.toast.success{border-color:rgba(0,255,157,.4)}.toast.error{border-color:rgba(255,69,96,.4)}.toast.info{border-color:rgba(0,200,255,.4)}
+@keyframes tI{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="ambient">
+  <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+  <canvas id="grid"></canvas>
+</div>
+<div id="boot">
+  <div class="boot-wrap">
+    <div class="boot-logo"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><span class="boot-n">N</span></div>
+    <div class="boot-title">NOVA</div>
+    <div class="boot-sub">Neural Operating Virtual Assistant</div>
+    <div class="boot-bar"><div class="boot-prog" id="bprog"></div></div>
+    <div class="boot-status" id="bstat">Sistemler başlatılıyor...</div>
+  </div>
+</div>
+<div id="app" class="hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="logo-sm"><div class="ldot"></div>NOVA</div>
+      <button class="sb-tog" id="sb-tog">‹</button>
+    </div>
+    <nav class="sb-nav">
+      <button class="nav-item active" data-mode="chat">💬 <span>Sohbet</span></button>
+      <button class="nav-item" data-mode="research">🔍 <span>Araştırma</span></button>
+      <button class="nav-item" data-mode="code">⚡ <span>Kod</span></button>
+      <button class="nav-item" data-mode="analyze">📊 <span>Analiz</span></button>
+    </nav>
+    <div class="sb-section">
+      <div class="sec-title">Geçmiş</div>
+      <div class="hist-list" id="hist-list"><div class="hist-empty">Henüz konuşma yok</div></div>
+    </div>
+    <div class="sb-foot">
+      <button class="set-btn" id="set-btn">⚙️ Ayarlar</button>
+      <div class="ver">v3.0.0 — NOVA Free</div>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menu-btn">☰</button>
+      <div class="tb-center"><div class="nova-status"><span class="sdot" id="sdot"></span><span id="slabel">Hazır</span></div></div>
+      <div class="tb-actions">
+        <button class="icon-btn" id="new-btn" title="Yeni Sohbet">＋</button>
+        <button class="icon-btn" id="clr-btn" title="Temizle">🗑</button>
+      </div>
+    </header>
+    <div class="chat-wrap" id="chat-wrap">
+      <div class="welcome" id="welcome">
+        <div class="w-avatar"><div class="w-pulse"></div><div class="w-core">◆</div></div>
+        <h1 class="w-title">Merhaba, Ben NOVA</h1>
+        <p class="w-sub">Neural Operating Virtual Assistant — Size nasıl yardımcı olabilirim?</p>
+        <div class="sugg-grid">
+          <button class="sugg-card" data-p="Yapay zeka teknolojisindeki son gelişmeleri anlat"><span class="card-ico">🔬</span><span>Yapay zeka trendleri</span></button>
+          <button class="sugg-card" data-p="Python'da bir web scraper kodu yaz"><span class="card-ico">💻</span><span>Kod yaz</span></button>
+          <button class="sugg-card" data-p="Bir iş planı oluşturmama yardım et"><span class="card-ico">📊</span><span>İş planı</span></button>
+          <button class="sugg-card" data-p="Bugün kendimi motive etmem için ne yapmalıyım?"><span class="card-ico">⚡</span><span>Motivasyon</span></button>
+        </div>
+      </div>
+      <div class="msgs" id="msgs"></div>
+    </div>
+    <div class="input-area">
+      <div class="mode-pills">
+        <button class="mpill active" data-mode="chat">💬 Sohbet</button>
+        <button class="mpill" data-mode="research">🔍 Araştırma</button>
+        <button class="mpill" data-mode="code">⚡ Kod</button>
+        <button class="mpill" data-mode="analyze">📊 Analiz</button>
+      </div>
+      <div class="input-box">
+        <textarea id="inp" placeholder="NOVA'ya bir şeyler sorun..." rows="1" maxlength="10000"></textarea>
+        <div class="inp-acts">
+          <button class="inp-btn" id="mic-btn" title="Sesli giriş">🎙️</button>
+          <button class="inp-btn" id="tts-btn" title="Ses yanıtı">🔊</button>
+          <button class="send-btn" id="send-btn">➤</button>
+        </div>
+      </div>
+      <div class="inp-foot"><span id="char-cnt">0 / 10000</span><span id="mode-lbl">Mod: Sohbet</span></div>
+    </div>
+  </main>
+  <div class="voice-ov hidden" id="voice-ov">
+    <div class="voice-modal">
+      <div class="v-rings"><div class="vr vr1"></div><div class="vr vr2"></div><div class="vr vr3"></div><div class="v-icon">🎙️</div></div>
+      <div class="v-label">Dinliyorum...</div>
+      <div class="v-transcript" id="v-trans"></div>
+      <button class="v-stop" id="v-stop">Durdur</button>
+    </div>
+  </div>
+  <div class="audio-bar hidden" id="audio-bar">
+    <div class="audio-inner">
+      <span class="audio-lbl">🔊 NOVA konuşuyor</span>
+      <div class="audio-waves"><span></span><span></span><span></span><span></span><span></span></div>
+      <button id="stop-audio">■ Durdur</button>
+    </div>
+  </div>
+  <div class="modal-ov hidden" id="set-modal">
+    <div class="modal">
+      <div class="modal-head"><h2>⚙️ NOVA Ayarları</h2><button class="modal-x" id="modal-x">✕</button></div>
+      <div class="modal-body">
+        <div class="set-grp">
+          <label>Gemini API Anahtarı <span class="free-badge">ÜCRETSİZ</span></label>
+          <input type="password" id="gemini-key" placeholder="AIza..." />
+          <small>👉 aistudio.google.com/apikey → Create API Key → Ücretsiz, kart yok</small>
+        </div>
+        <div class="set-grp">
+          <label>ElevenLabs API Anahtarı <span class="free-badge">ÜCRETSİZ PLAN</span></label>
+          <input type="password" id="el-key" placeholder="ElevenLabs API key..." />
+          <small>👉 elevenlabs.io → Profil → API Keys → Ayda 10.000 karakter ücretsiz</small>
+        </div>
+        <div class="set-grp">
+          <label>ElevenLabs Ses ID</label>
+          <input type="text" id="el-voice" placeholder="21m00Tcm4TlvDq8ikWAM" />
+          <small>Varsayılan: Rachel | Türkçe: EXAVITQu4vr4xnSDxMaL (Bella)</small>
+        </div>
+        <div class="set-grp">
+          <label>Ses Yanıtı</label>
+          <div class="tgl-row"><span>Her yanıtta otomatik seslendir</span><label class="tgl"><input type="checkbox" id="auto-spk" /><span class="tgl-sl"></span></label></div>
+        </div>
+        <div class="set-grp">
+          <label>NOVA Kişiliği (isteğe bağlı)</label>
+          <textarea id="sys-ov" rows="3" placeholder="Boş bırakırsanız varsayılan NOVA kişiliği kullanılır..."></textarea>
+        </div>
+        <button class="save-btn" id="save-btn">💾 Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast-wrap" id="toasts"></div>
+<script>
+'use strict';
+const SYS=`Sen NOVA'sın — Neural Operating Virtual Assistant. Gelişmiş bir yapay zeka asistanısın. Güvenilir, zeki, sakin, arkadaşça konuşursun. Kullanıcı Türkçe konuşursa Türkçe, İngilizce konuşursa İngilizce cevap ver. Sesli asistan olduğun için kısa ve doğal konuş, markdown kullanma. Sen NOVA'sın.`;
+const MODE_EXTRA={chat:'',research:'\n\nAraştırma modunda detaylı ve çok açılı yanıt ver.',code:'\n\nKod modunda production kalitesinde, yorumlu kod yaz.',analyze:'\n\nAnaliz modunda derin analitik düşünce ve net sonuçlar ver.'};
+const GEMINI_MODELS=['gemini-2.5-flash-lite','gemini-2.5-flash','gemini-2.5-pro'];
+const S={history:[],mode:'chat',thinking:false,speaking:false,recording:false,audio:null,recog:null,sid:Date.now(),cfg:{geminiKey:'',elKey:'',elVoice:'21m00Tcm4TlvDq8ikWAM',autoSpk:true,sysOv:''}};
+const $=id=>document.getElementById(id);
+const D={boot:$('boot'),bprog:$('bprog'),bstat:$('bstat'),app:$('app'),sidebar:$('sidebar'),sbTog:$('sb-tog'),menuBtn:$('menu-btn'),chatWrap:$('chat-wrap'),welcome:$('welcome'),msgs:$('msgs'),inp:$('inp'),sendBtn:$('send-btn'),micBtn:$('mic-btn'),ttsBtn:$('tts-btn'),sdot:$('sdot'),slabel:$('slabel'),charCnt:$('char-cnt'),modeLbl:$('mode-lbl'),voiceOv:$('voice-ov'),vTrans:$('v-trans'),vStop:$('v-stop'),audioBar:$('audio-bar'),stopAudio:$('stop-audio'),setModal:$('set-modal'),setBtn:$('set-btn'),modalX:$('modal-x'),gemKey:$('gemini-key'),elKey:$('el-key'),elVoice:$('el-voice'),autoSpk:$('auto-spk'),sysOv:$('sys-ov'),saveBtn:$('save-btn'),newBtn:$('new-btn'),clrBtn:$('clr-btn'),histList:$('hist-list'),toasts:$('toasts')};
+const STEPS=[{p:15,m:'Çekirdek sistemler başlatılıyor...'},{p:30,m:'Sinir yolları yükleniyor...'},{p:50,m:'Gemini bağlantısı kuruluyor...'},{p:65,m:'Bellek bankaları geri yükleniyor...'},{p:82,m:'Ses motoru aktifleştiriliyor...'},{p:100,m:'NOVA ONLINE ✓'}];
+async function boot(){loadCfg();drawGrid();for(const s of STEPS){D.bprog.style.width=s.p+'%';D.bstat.textContent=s.m;await sleep(250+Math.random()*150);}await sleep(400);D.boot.classList.add('out');await sleep(700);D.boot.style.display='none';D.app.classList.remove('hidden');if(S.cfg.geminiKey){setTimeout(async()=>{const g='Merhaba Patron! Ben NOVA. Size nasıl yardımcı olabilirim?';addMsg('assistant',g);S.history.push({role:'model',parts:[{text:g}]});D.welcome.classList.add('hidden');if(S.cfg.autoSpk)await speak(g);},500);}else{setTimeout(()=>{toast('👋 Ayarlar\'dan Gemini API anahtarını girin — ücretsiz!','info');openSet();},800);}}
+function drawGrid(){const c=$('grid'),ctx=c.getContext('2d');function draw(){c.width=innerWidth;c.height=innerHeight;ctx.strokeStyle='#00c8ff';ctx.lineWidth=0.5;for(let x=0;x<c.width;x+=48){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke();}for(let y=0;y<c.height;y+=48){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}}draw();window.addEventListener('resize',draw);}
+function loadCfg(){try{const s=localStorage.getItem('nova_free_cfg');if(s)Object.assign(S.cfg,JSON.parse(s));}catch(e){}updateTTSBtn();}
+function saveCfg(){S.cfg.geminiKey=D.gemKey.value.trim();S.cfg.elKey=D.elKey.value.trim();S.cfg.elVoice=D.elVoice.value.trim()||'21m00Tcm4TlvDq8ikWAM';S.cfg.autoSpk=D.autoSpk.checked;S.cfg.sysOv=D.sysOv.value.trim();localStorage.setItem('nova_free_cfg',JSON.stringify(S.cfg));updateTTSBtn();closeSet();toast('✓ Ayarlar kaydedildi','success');}
+function openSet(){D.gemKey.value=S.cfg.geminiKey||'';D.elKey.value=S.cfg.elKey||'';D.elVoice.value=S.cfg.elVoice||'21m00Tcm4TlvDq8ikWAM';D.autoSpk.checked=S.cfg.autoSpk!==false;D.sysOv.value=S.cfg.sysOv||'';D.setModal.classList.remove('hidden');}
+function closeSet(){D.setModal.classList.add('hidden');}
+function setStatus(lbl,type=''){D.slabel.textContent=lbl;D.sdot.className='sdot '+type;}
+async function send(txt){txt=(txt||D.inp.value).trim();if(!txt||S.thinking)return;if(!S.cfg.geminiKey){toast('⚠️ Gemini API anahtarı gerekli','error');openSet();return;}D.welcome.classList.add('hidden');addMsg('user',txt);S.history.push({role:'user',parts:[{text:txt}]});D.inp.value='';D.inp.style.height='auto';updateChar();S.thinking=true;D.sendBtn.disabled=true;setStatus('Düşünüyor...','thinking');const tid=addTyping();try{const reply=await callGemini();removeTyping(tid);addMsg('assistant',reply);S.history.push({role:'model',parts:[{text:reply}]});addHist(txt);if(S.cfg.autoSpk)await speak(reply);setStatus('Hazır');}catch(e){removeTyping(tid);addMsg('assistant','❌ Hata: '+e.message,true);setStatus('Hata','error');toast('❌ '+e.message,'error');setTimeout(()=>setStatus('Hazır'),3000);}S.thinking=false;D.sendBtn.disabled=false;}
+async function callGemini(modelIdx=0){const sys=(S.cfg.sysOv||SYS)+(MODE_EXTRA[S.mode]||'');const msgs=S.history.slice(-40);const model=GEMINI_MODELS[Math.min(modelIdx,GEMINI_MODELS.length-1)];const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${S.cfg.geminiKey}`;const body={system_instruction:{parts:[{text:sys}]},contents:msgs,generationConfig:{temperature:0.8,maxOutputTokens:1024}};const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){const e=await res.json().catch(()=>({}));if(res.status===400&&modelIdx<GEMINI_MODELS.length-1){return callGemini(modelIdx+1);}if(res.status===429){if(modelIdx<GEMINI_MODELS.length-1){await sleep(1000);return callGemini(modelIdx+1);}setStatus('Limit aşıldı, bekleniyor...','thinking');await sleep(5000);return callGemini(0);}throw new Error(e?.error?.message||'Gemini hatası: '+res.status);}const data=await res.json();return data?.candidates?.[0]?.content?.parts?.[0]?.text||'(Boş yanıt)';}
+function startMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('❌ Chrome kullanın — sesli giriş için','error');return;}const r=new SR();r.lang='tr-TR';r.interimResults=true;r.continuous=false;S.recog=r;S.recording=true;D.voiceOv.classList.remove('hidden');D.vTrans.textContent='';D.micBtn.classList.add('recording');setStatus('Dinliyorum...','speaking');r.onresult=e=>{let interim='',final='';for(const res of e.results){if(res.isFinal)final+=res[0].transcript;else interim+=res[0].transcript;}D.vTrans.textContent=final||interim;if(final){D.inp.value=final;updateChar();}};r.onend=()=>{D.voiceOv.classList.add('hidden');D.micBtn.classList.remove('recording');S.recording=false;S.recog=null;if(D.inp.value.trim())send();else setStatus('Hazır');};r.onerror=e=>{D.voiceOv.classList.add('hidden');D.micBtn.classList.remove('recording');S.recording=false;S.recog=null;if(e.error!=='no-speech')toast('🎙️ Ses hatası: '+e.error,'error');setStatus('Hazır');};r.start();}
+function stopMic(){if(S.recog)S.recog.stop();D.voiceOv.classList.add('hidden');D.micBtn.classList.remove('recording');S.recording=false;}
+async function speak(text){if(!S.cfg.elKey)return;const clean=text.replace(/```[\s\S]*?```/g,'Kod bloğu.').replace(/`[^`]+`/g,'').replace(/#+\s+/g,'').replace(/\*\*([^*]+)\*\*/g,'$1').replace(/\*([^*]+)\*/g,'$1').replace(/\n+/g,' ').trim().slice(0,5000);if(!clean)return;stopAudioFn(false);S.speaking=true;setStatus('Konuşuyor...','speaking');D.audioBar.classList.remove('hidden');try{const res=await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${S.cfg.elVoice||'21m00Tcm4TlvDq8ikWAM'}`,{method:'POST',headers:{'Content-Type':'application/json','xi-api-key':S.cfg.elKey},body:JSON.stringify({text:clean,model_id:'eleven_multilingual_v2',voice_settings:{stability:0.45,similarity_boost:0.82,style:0.25,use_speaker_boost:true}})});if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e?.detail?.message||e?.detail||'ElevenLabs '+res.status);}const blob=await res.blob();const url=URL.createObjectURL(blob);const audio=new Audio(url);S.audio=audio;await new Promise((res,rej)=>{audio.onended=()=>{URL.revokeObjectURL(url);res();};audio.onerror=()=>{URL.revokeObjectURL(url);rej();};audio.play().catch(rej);});}catch(e){toast('🔊 TTS: '+e.message,'error');}finally{S.speaking=false;S.audio=null;D.audioBar.classList.add('hidden');if(!S.thinking)setStatus('Hazır');}}
+function stopAudioFn(status=true){if(S.audio){S.audio.pause();S.audio=null;}S.speaking=false;D.audioBar.classList.add('hidden');if(status)setStatus('Hazır');}
+function updateTTSBtn(){D.ttsBtn.classList.toggle('enabled',S.cfg.autoSpk!==false);D.ttsBtn.title=S.cfg.autoSpk!==false?'Otomatik ses AÇIK':'Otomatik ses KAPALI';}
+function toggleTTS(){S.cfg.autoSpk=!S.cfg.autoSpk;localStorage.setItem('nova_free_cfg',JSON.stringify(S.cfg));updateTTSBtn();toast(S.cfg.autoSpk?'🔊 Otomatik ses açık':'🔇 Otomatik ses kapalı','info');}
+function addMsg(role,content,isErr=false){const el=document.createElement('div');el.className='msg '+role;const av=document.createElement('div');av.className='msg-av';av.textContent=role==='user'?'👤':'◆';const body=document.createElement('div');body.className='msg-body';const lbl=document.createElement('div');lbl.className='msg-role';lbl.textContent=role==='user'?'SİZ':'NOVA';const txt=document.createElement('div');txt.className='msg-text';if(isErr)txt.style.color='var(--danger)';if(role==='assistant'&&!isErr)txt.innerHTML=md(content);else txt.textContent=content;body.append(lbl,txt);if(role==='assistant'&&!isErr){const acts=document.createElement('div');acts.className='msg-acts';const cp=mkBtn('📋 Kopyala',()=>{navigator.clipboard.writeText(content);toast('✓ Kopyalandı','success');});const sp=mkBtn('🔊 Seslendir',()=>speak(content));acts.append(cp,sp);body.appendChild(acts);}el.append(av,body);D.msgs.appendChild(el);scroll();}
+function mkBtn(lbl,fn){const b=document.createElement('button');b.className='act-btn';b.textContent=lbl;b.onclick=fn;return b;}
+function addTyping(){const id='ty'+Date.now();const el=document.createElement('div');el.id=id;el.className='msg assistant';el.innerHTML='<div class="msg-av">◆</div><div class="msg-body"><div class="msg-role">NOVA</div><div class="typing"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>';D.msgs.appendChild(el);scroll();return id;}
+function removeTyping(id){const e=$(id);if(e)e.remove();}
+function scroll(){D.chatWrap.scrollTo({top:D.chatWrap.scrollHeight,behavior:'smooth'});}
+function md(t){let h=esc(t);h=h.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,l,c)=>`<pre><code>${c.trim()}</code></pre>`);h=h.replace(/`([^`\n]+)`/g,'<code>$1</code>');h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');h=h.replace(/^## (.+)$/gm,'<h2>$1</h2>');h=h.replace(/^# (.+)$/gm,'<h1>$1</h1>');h=h.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>');h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');h=h.replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>');h=h.replace(/(^[•\-\*\+] .+$\n?)+/gm,m=>`<ul>${m.trim().split('\n').map(l=>`<li>${l.replace(/^[•\-\*\+] /,'')}</li>`).join('')}</ul>`);h=h.replace(/(^\d+\. .+$\n?)+/gm,m=>`<ol>${m.trim().split('\n').map(l=>`<li>${l.replace(/^\d+\. /,'')}</li>`).join('')}</ol>`);h=h.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" style="color:var(--accent)">$1</a>');h=h.replace(/\n\n+/g,'</p><p>');h='<p>'+h+'</p>';h=h.replace(/<p>\s*<\/p>/g,'');h=h.replace(/\n/g,'<br>');return h;}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function addHist(msg){const empty=D.histList.querySelector('.hist-empty');if(empty)empty.remove();if(D.histList.querySelector(`[data-sid="${S.sid}"]`))return;const item=document.createElement('div');item.className='hist-item';item.dataset.sid=S.sid;item.textContent=msg.slice(0,50)+(msg.length>50?'…':'');D.histList.prepend(item);}
+function newChat(){S.history=[];S.sid=Date.now();D.msgs.innerHTML='';D.welcome.classList.remove('hidden');stopAudioFn();setStatus('Hazır');toast('✓ Yeni sohbet','success');}
+function setMode(m){S.mode=m;document.querySelectorAll('.mpill,.nav-item').forEach(e=>e.classList.toggle('active',e.dataset.mode===m));const lbls={chat:'Sohbet',research:'Araştırma',code:'Kod',analyze:'Analiz'};D.modeLbl.textContent='Mod: '+(lbls[m]||m);D.inp.placeholder={chat:"NOVA'ya bir şeyler sorun...",research:'Araştırılacak konuyu yazın...',code:'Kodlanacak şeyi tanımlayın...',analyze:'Analiz edilecek konuyu yazın...'}[m];}
+function updateChar(){const l=D.inp.value.length;D.charCnt.textContent=l+' / 10000';D.charCnt.style.color=l>9000?'var(--danger)':'';}
+function autoResize(){D.inp.style.height='auto';D.inp.style.height=Math.min(D.inp.scrollHeight,160)+'px';updateChar();}
+function toast(msg,type='info'){const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;D.toasts.appendChild(t);setTimeout(()=>{t.style.cssText='opacity:0;transform:translateX(20px);transition:all .3s';setTimeout(()=>t.remove(),300);},3200);}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+D.sendBtn.addEventListener('click',()=>send());
+D.inp.addEventListener('input',autoResize);
+D.inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+D.micBtn.addEventListener('click',()=>{if(S.recording)stopMic();else startMic();});
+D.vStop.addEventListener('click',stopMic);
+D.ttsBtn.addEventListener('click',toggleTTS);
+D.stopAudio.addEventListener('click',()=>stopAudioFn(true));
+D.sbTog.addEventListener('click',()=>D.sidebar.classList.toggle('collapsed'));
+D.menuBtn.addEventListener('click',()=>D.sidebar.classList.toggle('collapsed'));
+D.setBtn.addEventListener('click',openSet);
+D.modalX.addEventListener('click',closeSet);
+D.saveBtn.addEventListener('click',saveCfg);
+D.setModal.addEventListener('click',e=>{if(e.target===D.setModal)closeSet();});
+D.newBtn.addEventListener('click',newChat);
+D.clrBtn.addEventListener('click',()=>{if(confirm('Sohbeti temizle?'))newChat();});
+document.querySelectorAll('.mpill,.nav-item').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+document.querySelectorAll('.sugg-card').forEach(c=>c.addEventListener('click',()=>send(c.dataset.p)));
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();newChat();}if(e.key==='Escape'){closeSet();stopMic();}});
+boot();
+</script>
+</body>
+</html>
