@@ -77,10 +77,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .w-core{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(0,200,255,.15),rgba(123,79,255,.15));border:1px solid var(--borderB);display:flex;align-items:center;justify-content:center;font-size:32px}
 .w-title{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:2px;color:var(--text);text-align:center}
 .w-sub{font-size:13px;color:var(--muted);text-align:center;max-width:400px}
-.sugg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;max-width:480px;width:100%}
-.sugg-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;text-align:left;transition:all var(--t);color:var(--muted);font-size:13px;font-family:var(--font)}
+.sugg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;max-width:500px;width:100%}
+.sugg-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;text-align:left;transition:all var(--t);color:var(--muted);font-size:12px;font-family:var(--font)}
 .sugg-card:hover{border-color:rgba(0,200,255,.35);background:rgba(0,200,255,.06);color:var(--text);transform:translateY(-2px)}
-.card-ico{font-size:18px;flex-shrink:0}
+.card-ico{font-size:16px;flex-shrink:0}
 .msgs{display:flex;flex-direction:column;gap:0;padding:20px 0}
 .msg{display:flex;padding:14px 20px;gap:14px;animation:mFI .3s ease}
 @keyframes mFI{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -106,11 +106,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .msg-text th{background:rgba(0,200,255,.08);color:var(--accent);padding:8px 10px;text-align:left;border:1px solid var(--border);font-weight:500}
 .msg-text td{padding:7px 10px;border:1px solid var(--border)}
 .msg-text tr:nth-child(even) td{background:rgba(0,200,255,.02)}
+.msg-text img{max-width:100%;border-radius:8px;margin:8px 0}
 .typing{display:flex;align-items:center;gap:5px;padding:4px 0}
 .tdot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:tB 1.2s ease-in-out infinite}
 .tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
 @keyframes tB{0%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
-.msg-acts{display:flex;gap:6px;margin-top:10px}
+.msg-acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
 .act-btn{background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font);transition:all var(--t)}
 .act-btn:hover{border-color:var(--borderB);color:var(--accent)}
 .input-area{border-top:1px solid var(--border);background:rgba(8,13,20,.9);backdrop-filter:blur(20px);padding:10px 16px 14px;flex-shrink:0}
@@ -118,6 +119,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .mpill{background:none;border:1px solid var(--border);color:var(--dim);padding:4px 12px;border-radius:20px;cursor:pointer;font-size:11px;font-family:var(--font);transition:all var(--t)}
 .mpill:hover{border-color:var(--borderB);color:var(--muted)}
 .mpill.active{background:rgba(0,200,255,.1);border-color:rgba(0,200,255,.4);color:var(--accent)}
+#file-preview{display:none;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.file-thumb{position:relative;border:1px solid rgba(0,200,255,.3);border-radius:8px;padding:6px 10px;background:rgba(0,200,255,.05);display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);max-width:200px}
+.file-thumb img{width:32px;height:32px;border-radius:4px;object-fit:cover}
+.file-del{background:none;border:none;color:var(--danger);cursor:pointer;font-size:12px;margin-left:auto}
 .input-box{display:flex;align-items:flex-end;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rL);padding:12px 10px 12px 16px;gap:8px;transition:border-color var(--t)}
 .input-box:focus-within{border-color:rgba(0,200,255,.4);box-shadow:0 0 0 3px rgba(0,200,255,.06)}
 #inp{flex:1;background:none;border:none;outline:none;resize:none;color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;min-height:22px;max-height:160px;overflow-y:auto;scrollbar-width:none}
@@ -177,11 +182,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .tgl input:checked+.tgl-sl::before{transform:translateX(18px);background:var(--accent)}
 .save-btn{background:linear-gradient(135deg,rgba(0,200,255,.15),rgba(123,79,255,.15));border:1px solid rgba(0,200,255,.4);color:var(--accent);padding:12px;border-radius:10px;cursor:pointer;font-size:13px;font-family:var(--display);letter-spacing:1px;font-weight:600;transition:all var(--t);width:100%;margin-top:4px}
 .save-btn:hover{background:linear-gradient(135deg,rgba(0,200,255,.25),rgba(123,79,255,.25))}
-.free-badge{display:inline-block;background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.3);color:var(--accent3);font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;font-family:var(--mono)}
 .toast-wrap{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{background:var(--surface2);border:1px solid var(--borderB);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text);animation:tI .3s ease;pointer-events:auto;max-width:300px}
 .toast.success{border-color:rgba(0,255,157,.4)}.toast.error{border-color:rgba(255,69,96,.4)}.toast.info{border-color:rgba(0,200,255,.4)}
 @keyframes tI{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+.weather-widget{background:var(--surface2);border:1px solid var(--borderB);border-radius:12px;padding:16px;margin:8px 0;display:flex;align-items:center;gap:16px}
+.weather-icon{font-size:40px}
+.weather-info{flex:1}
+.weather-temp{font-family:var(--display);font-size:28px;color:var(--accent);font-weight:700}
+.weather-desc{font-size:13px;color:var(--muted);margin-top:2px}
+.weather-city{font-size:11px;color:var(--dim);margin-top:4px;font-family:var(--mono)}
 .hidden{display:none!important}
 </style>
 </head>
@@ -217,7 +227,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     </div>
     <div class="sb-foot">
       <button class="set-btn" id="set-btn">⚙️ Ayarlar</button>
-      <div class="ver">v3.0.0 — NOVA Free</div>
+      <div class="ver">v4.0.0 — NOVA Pro</div>
     </div>
   </aside>
   <main class="main">
@@ -235,10 +245,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <h1 class="w-title">Merhaba, Ben NOVA</h1>
         <p class="w-sub">Neural Operating Virtual Assistant — Size nasıl yardımcı olabilirim?</p>
         <div class="sugg-grid">
-          <button class="sugg-card" data-p="Yapay zeka teknolojisindeki son gelişmeleri anlat"><span class="card-ico">🔬</span><span>Yapay zeka trendleri</span></button>
-          <button class="sugg-card" data-p="Python'da bir web scraper kodu yaz"><span class="card-ico">💻</span><span>Kod yaz</span></button>
-          <button class="sugg-card" data-p="Bir iş planı oluşturmama yardım et"><span class="card-ico">📊</span><span>İş planı</span></button>
-          <button class="sugg-card" data-p="Bugün kendimi motive etmem için ne yapmalıyım?"><span class="card-ico">⚡</span><span>Motivasyon</span></button>
+          <button class="sugg-card" data-p="İstanbul hava durumu nasıl?"><span class="card-ico">🌤️</span><span>Hava durumu</span></button>
+          <button class="sugg-card" data-p="Bugünün güncel haberlerini anlat"><span class="card-ico">📰</span><span>Haberler</span></button>
+          <button class="sugg-card" data-p="Python'da web scraper yaz"><span class="card-ico">💻</span><span>Kod yaz</span></button>
+          <button class="sugg-card" data-p="YouTube'da lo-fi müzik aç"><span class="card-ico">🎵</span><span>Müzik aç</span></button>
+          <button class="sugg-card" data-p="Bana motivasyon ver"><span class="card-ico">⚡</span><span>Motivasyon</span></button>
+          <button class="sugg-card" data-p="Bana komik bir şaka anlat"><span class="card-ico">😂</span><span>Şaka anlat</span></button>
+          <button class="sugg-card" data-p="Bir iş planı oluştur"><span class="card-ico">📊</span><span>İş planı</span></button>
+          <button class="sugg-card" data-p="Türkiye ekonomisini analiz et"><span class="card-ico">🌍</span><span>Analiz</span></button>
         </div>
       </div>
       <div class="msgs" id="msgs"></div>
@@ -250,9 +264,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <button class="mpill" data-mode="code">⚡ Kod</button>
         <button class="mpill" data-mode="analyze">📊 Analiz</button>
       </div>
+      <div id="file-preview"></div>
       <div class="input-box">
         <textarea id="inp" placeholder="NOVA'ya bir şeyler sorun..." rows="1" maxlength="10000"></textarea>
         <div class="inp-acts">
+          <input type="file" id="file-inp" accept="image/*,.pdf,.txt,.docx" style="display:none" multiple />
+          <button class="inp-btn" id="file-btn" title="Dosya/Fotoğraf yükle">📎</button>
           <button class="inp-btn" id="mic-btn" title="Sesli giriş">🎙️</button>
           <button class="inp-btn" id="tts-btn" title="Ses yanıtı">🔊</button>
           <button class="send-btn" id="send-btn">➤</button>
@@ -281,19 +298,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       <div class="modal-head"><h2>⚙️ NOVA Ayarları</h2><button class="modal-x" id="modal-x">✕</button></div>
       <div class="modal-body">
         <div class="set-grp">
-          <label>Gemini API Anahtarı <span class="free-badge">ÜCRETSİZ</span></label>
-          <input type="password" id="gemini-key" placeholder="AIza..." />
-          <small>👉 aistudio.google.com/apikey → Create API Key → Ücretsiz, kart yok</small>
-        </div>
-        <div class="set-grp">
-          <label>ElevenLabs API Anahtarı <span class="free-badge">ÜCRETSİZ PLAN</span></label>
+          <label>ElevenLabs API Anahtarı (isteğe bağlı)</label>
           <input type="password" id="el-key" placeholder="ElevenLabs API key..." />
-          <small>👉 elevenlabs.io → Profil → API Keys → Ayda 10.000 karakter ücretsiz</small>
+          <small>Boş bırakırsanız tarayıcı sesi kullanılır</small>
         </div>
         <div class="set-grp">
-          <label>ElevenLabs Ses ID</label>
-          <input type="text" id="el-voice" placeholder="21m00Tcm4TlvDq8ikWAM" />
-          <small>Varsayılan: Rachel | Türkçe: EXAVITQu4vr4xnSDxMaL (Bella)</small>
+          <label>ElevenLabs Ses ID (isteğe bağlı)</label>
+          <input type="text" id="el-voice" placeholder="Ses ID..." />
         </div>
         <div class="set-grp">
           <label>Ses Yanıtı</label>
@@ -311,42 +322,298 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <div class="toast-wrap" id="toasts"></div>
 <script>
 'use strict';
-const SYS=`Sen NOVA'sın — Neural Operating Virtual Assistant. Gelişmiş bir yapay zeka asistanısın. Güvenilir, zeki, sakin, arkadaşça konuşursun. Kullanıcı Türkçe konuşursa Türkçe, İngilizce konuşursa İngilizce cevap ver. Sesli asistan olduğun için kısa ve doğal konuş, markdown kullanma. Sen NOVA'sın.`;
-const MODE_EXTRA={chat:'',research:'\n\nAraştırma modunda detaylı ve çok açılı yanıt ver.',code:'\n\nKod modunda production kalitesinde, yorumlu kod yaz.',analyze:'\n\nAnaliz modunda derin analitik düşünce ve net sonuçlar ver.'};
+
+// ============================================================
+// BURAYA GEMİNİ API KEY'İNİ YAZ
+const GEMINI_API_KEY = 'YOUR_GEMINI_KEY';
+// ============================================================
+
+const SYS=`Sen NOVA'sın — Neural Operating Virtual Assistant. Zeki, güvenilir, arkadaşça bir asistansın. Kullanıcı Türkçe konuşursa Türkçe, İngilizce konuşursa İngilizce cevap ver. Kısa ve doğal konuş.
+
+BİLGİSAYAR KOMUTLARI — Aşağıdaki komutları SADECE şu formatta ver, başka hiçbir şey yazma:
+- YouTube açmak için: YOUTUBE_OPEN: arama terimi
+- Haber için: NEWS_FETCH: konu
+- Şaka için: JOKE_REQUEST: konu
+- Hatırlatıcı için: REMINDER_SET: dakika|mesaj
+Örnek: "YouTube'da Tarkan aç" → YOUTUBE_OPEN: Tarkan
+Örnek: "Hava durumu" → normal yanıt ver, hava durumu widget ayrı açılacak
+Örnek: "Şaka anlat" → JOKE_REQUEST: genel
+Sen NOVA'sın.`;
+
+const MODE_EXTRA={chat:'',research:'\n\nDetaylı araştır, birden fazla açıdan değerlendir.',code:'\n\nProduction kalitesinde, yorumlu kod yaz.',analyze:'\n\nDerin analitik düşünce, net sonuçlar ver.'};
 const GEMINI_MODELS=['gemini-2.5-flash-lite','gemini-2.5-flash','gemini-2.5-pro'];
-const S={history:[],mode:'chat',thinking:false,speaking:false,recording:false,audio:null,recog:null,sid:Date.now(),cfg:{geminiKey:'AIzaSyBxlcleqQCEfOZRH_uv5Di4Fg23-6s0Bb4',elKey:'',elVoice:'21m00Tcm4TlvDq8ikWAM',autoSpk:true,sysOv:''}};
+
+const S={files:[],history:[],mode:'chat',thinking:false,speaking:false,recording:false,audio:null,recog:null,sid:Date.now(),
+  cfg:{elKey:'',elVoice:'',autoSpk:true,sysOv:''}
+};
+
 const $=id=>document.getElementById(id);
-const D={boot:$('boot'),bprog:$('bprog'),bstat:$('bstat'),app:$('app'),sidebar:$('sidebar'),sbTog:$('sb-tog'),menuBtn:$('menu-btn'),chatWrap:$('chat-wrap'),welcome:$('welcome'),msgs:$('msgs'),inp:$('inp'),sendBtn:$('send-btn'),micBtn:$('mic-btn'),ttsBtn:$('tts-btn'),sdot:$('sdot'),slabel:$('slabel'),charCnt:$('char-cnt'),modeLbl:$('mode-lbl'),voiceOv:$('voice-ov'),vTrans:$('v-trans'),vStop:$('v-stop'),audioBar:$('audio-bar'),stopAudio:$('stop-audio'),setModal:$('set-modal'),setBtn:$('set-btn'),modalX:$('modal-x'),gemKey:$('gemini-key'),elKey:$('el-key'),elVoice:$('el-voice'),autoSpk:$('auto-spk'),sysOv:$('sys-ov'),saveBtn:$('save-btn'),newBtn:$('new-btn'),clrBtn:$('clr-btn'),histList:$('hist-list'),toasts:$('toasts')};
+const D={
+  boot:$('boot'),bprog:$('bprog'),bstat:$('bstat'),app:$('app'),
+  sidebar:$('sidebar'),sbTog:$('sb-tog'),menuBtn:$('menu-btn'),
+  chatWrap:$('chat-wrap'),welcome:$('welcome'),msgs:$('msgs'),
+  inp:$('inp'),sendBtn:$('send-btn'),micBtn:$('mic-btn'),
+  ttsBtn:$('tts-btn'),fileBtn:$('file-btn'),fileInp:$('file-inp'),
+  filePreview:$('file-preview'),
+  sdot:$('sdot'),slabel:$('slabel'),charCnt:$('char-cnt'),modeLbl:$('mode-lbl'),
+  voiceOv:$('voice-ov'),vTrans:$('v-trans'),vStop:$('v-stop'),
+  audioBar:$('audio-bar'),stopAudio:$('stop-audio'),
+  setModal:$('set-modal'),setBtn:$('set-btn'),modalX:$('modal-x'),
+  elKey:$('el-key'),elVoice:$('el-voice'),autoSpk:$('auto-spk'),
+  sysOv:$('sys-ov'),saveBtn:$('save-btn'),
+  newBtn:$('new-btn'),clrBtn:$('clr-btn'),histList:$('hist-list'),toasts:$('toasts')
+};
+
 const STEPS=[{p:15,m:'Çekirdek sistemler başlatılıyor...'},{p:30,m:'Sinir yolları yükleniyor...'},{p:50,m:'Gemini bağlantısı kuruluyor...'},{p:65,m:'Bellek bankaları geri yükleniyor...'},{p:82,m:'Ses motoru aktifleştiriliyor...'},{p:100,m:'NOVA ONLINE ✓'}];
-async function boot(){loadCfg();drawGrid();for(const s of STEPS){D.bprog.style.width=s.p+'%';D.bstat.textContent=s.m;await sleep(250+Math.random()*150);}await sleep(400);D.boot.classList.add('out');await sleep(700);D.boot.style.display='none';D.app.classList.remove('hidden');if(S.cfg.geminiKey){setTimeout(async()=>{const g='Merhaba Patron! Ben NOVA. Size nasıl yardımcı olabilirim?';addMsg('assistant',g);S.history.push({role:'model',parts:[{text:g}]});D.welcome.classList.add('hidden');if(S.cfg.autoSpk)await speak(g);},500);}else{setTimeout(()=>{toast('👋 Ayarlar\'dan Gemini API anahtarını girin — ücretsiz!','info');openSet();},800);}}
+
+async function boot(){loadCfg();drawGrid();for(const s of STEPS){D.bprog.style.width=s.p+'%';D.bstat.textContent=s.m;await sleep(250+Math.random()*150);}await sleep(400);D.boot.classList.add('out');await sleep(700);D.boot.style.display='none';D.app.classList.remove('hidden');setTimeout(async()=>{const g='Merhaba! Ben NOVA, yapay zeka asistanınız. Size nasıl yardımcı olabilirim?';addMsg('assistant',g);S.history.push({role:'model',parts:[{text:g}]});D.welcome.classList.add('hidden');if(S.cfg.autoSpk)await speak(g);},500);}
+
 function drawGrid(){const c=$('grid'),ctx=c.getContext('2d');function draw(){c.width=innerWidth;c.height=innerHeight;ctx.strokeStyle='#00c8ff';ctx.lineWidth=0.5;for(let x=0;x<c.width;x+=48){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke();}for(let y=0;y<c.height;y+=48){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}}draw();window.addEventListener('resize',draw);}
-function loadCfg(){try{const s=localStorage.getItem('nova_free_cfg');if(s)Object.assign(S.cfg,JSON.parse(s));}catch(e){}updateTTSBtn();}
-function saveCfg(){S.cfg.geminiKey=D.gemKey.value.trim();S.cfg.elKey=D.elKey.value.trim();S.cfg.elVoice=D.elVoice.value.trim()||'21m00Tcm4TlvDq8ikWAM';S.cfg.autoSpk=D.autoSpk.checked;S.cfg.sysOv=D.sysOv.value.trim();localStorage.setItem('nova_free_cfg',JSON.stringify(S.cfg));updateTTSBtn();closeSet();toast('✓ Ayarlar kaydedildi','success');}
-function openSet(){D.gemKey.value=S.cfg.geminiKey||'';D.elKey.value=S.cfg.elKey||'';D.elVoice.value=S.cfg.elVoice||'21m00Tcm4TlvDq8ikWAM';D.autoSpk.checked=S.cfg.autoSpk!==false;D.sysOv.value=S.cfg.sysOv||'';D.setModal.classList.remove('hidden');}
+
+function loadCfg(){try{const s=localStorage.getItem('nova_cfg_v4');if(s)Object.assign(S.cfg,JSON.parse(s));}catch(e){}updateTTSBtn();}
+function saveCfg(){S.cfg.elKey=D.elKey.value.trim();S.cfg.elVoice=D.elVoice.value.trim();S.cfg.autoSpk=D.autoSpk.checked;S.cfg.sysOv=D.sysOv.value.trim();localStorage.setItem('nova_cfg_v4',JSON.stringify(S.cfg));updateTTSBtn();closeSet();toast('✓ Ayarlar kaydedildi','success');}
+function openSet(){D.elKey.value=S.cfg.elKey||'';D.elVoice.value=S.cfg.elVoice||'';D.autoSpk.checked=S.cfg.autoSpk!==false;D.sysOv.value=S.cfg.sysOv||'';D.setModal.classList.remove('hidden');}
 function closeSet(){D.setModal.classList.add('hidden');}
 function setStatus(lbl,type=''){D.slabel.textContent=lbl;D.sdot.className='sdot '+type;}
-async function send(txt){txt=(txt||D.inp.value).trim();if(!txt||S.thinking)return;if(!S.cfg.geminiKey){toast('⚠️ Gemini API anahtarı gerekli','error');openSet();return;}D.welcome.classList.add('hidden');addMsg('user',txt);S.history.push({role:'user',parts:[{text:txt}]});D.inp.value='';D.inp.style.height='auto';updateChar();S.thinking=true;D.sendBtn.disabled=true;setStatus('Düşünüyor...','thinking');const tid=addTyping();try{const reply=await callGemini();removeTyping(tid);addMsg('assistant',reply);S.history.push({role:'model',parts:[{text:reply}]});addHist(txt);if(S.cfg.autoSpk)await speak(reply);setStatus('Hazır');}catch(e){removeTyping(tid);addMsg('assistant','❌ Hata: '+e.message,true);setStatus('Hata','error');toast('❌ '+e.message,'error');setTimeout(()=>setStatus('Hazır'),3000);}S.thinking=false;D.sendBtn.disabled=false;}
-async function callGemini(modelIdx=0){const sys=(S.cfg.sysOv||SYS)+(MODE_EXTRA[S.mode]||'');const msgs=S.history.slice(-40);const model=GEMINI_MODELS[Math.min(modelIdx,GEMINI_MODELS.length-1)];const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${S.cfg.geminiKey}`;const body={system_instruction:{parts:[{text:sys}]},contents:msgs,generationConfig:{temperature:0.8,maxOutputTokens:1024}};const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){const e=await res.json().catch(()=>({}));if(res.status===400&&modelIdx<GEMINI_MODELS.length-1){return callGemini(modelIdx+1);}if(res.status===429){if(modelIdx<GEMINI_MODELS.length-1){await sleep(1000);return callGemini(modelIdx+1);}setStatus('Limit aşıldı, bekleniyor...','thinking');await sleep(5000);return callGemini(0);}throw new Error(e?.error?.message||'Gemini hatası: '+res.status);}const data=await res.json();return data?.candidates?.[0]?.content?.parts?.[0]?.text||'(Boş yanıt)';}
-function startMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('❌ Chrome kullanın — sesli giriş için','error');return;}const r=new SR();r.lang='tr-TR';r.interimResults=true;r.continuous=false;S.recog=r;S.recording=true;D.voiceOv.classList.remove('hidden');D.vTrans.textContent='';D.micBtn.classList.add('recording');setStatus('Dinliyorum...','speaking');r.onresult=e=>{let interim='',final='';for(const res of e.results){if(res.isFinal)final+=res[0].transcript;else interim+=res[0].transcript;}D.vTrans.textContent=final||interim;if(final){D.inp.value=final;updateChar();}};r.onend=()=>{D.voiceOv.classList.add('hidden');D.micBtn.classList.remove('recording');S.recording=false;S.recog=null;if(D.inp.value.trim())send();else setStatus('Hazır');};r.onerror=e=>{D.voiceOv.classList.add('hidden');D.micBtn.classList.remove('recording');S.recording=false;S.recog=null;if(e.error!=='no-speech')toast('🎙️ Ses hatası: '+e.error,'error');setStatus('Hazır');};r.start();}
+
+// ===== KOMUT İŞLEYİCİ =====
+async function handleCommand(reply){
+  const r=reply.trim();
+  if(r.startsWith('YOUTUBE_OPEN:')){
+    const q=r.replace('YOUTUBE_OPEN:','').trim();
+    window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(q),'_blank');
+    return'YouTube\'da "'+q+'" açılıyor! 🎬';
+  }
+  if(r.startsWith('JOKE_REQUEST:')){
+    return null; // Gemini zaten şaka üretecek, tekrar sorma
+  }
+  if(r.startsWith('REMINDER_SET:')){
+    const parts=r.replace('REMINDER_SET:','').trim().split('|');
+    const mins=parseInt(parts[0])||5;
+    const msg=parts[1]||'Hatırlatıcı!';
+    setTimeout(()=>{toast('⏰ '+msg,'info');speak(msg);},mins*60000);
+    return mins+' dakika sonra hatırlatıcı kuruldu: "'+msg+'" ⏰';
+  }
+  return null;
+}
+
+// ===== HAVA DURUMU =====
+async function getWeather(city){
+  try{
+    const res=await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);
+    const d=await res.json();
+    const cur=d.current_condition[0];
+    const temp=cur.temp_C;
+    const desc=cur.weatherDesc[0].value;
+    const icons={'Sunny':'☀️','Clear':'🌙','Partly cloudy':'⛅','Cloudy':'☁️','Overcast':'☁️','Rain':'🌧️','Snow':'❄️','Thunder':'⛈️','Fog':'🌫️','Mist':'🌫️'};
+    const icon=Object.entries(icons).find(([k])=>desc.includes(k))?.[1]||'🌤️';
+    return{temp,desc,icon,city};
+  }catch(e){return null;}
+}
+
+// ===== MESAJ GÖNDER =====
+async function send(txt){
+  txt=(txt||D.inp.value).trim();
+  if(!txt&&S.files.length===0||S.thinking)return;
+  D.welcome.classList.add('hidden');
+
+  // Hava durumu özel işleme
+  const weatherMatch=txt.match(/([\w\s]+)\s*(hava|weather)/i);
+  if(weatherMatch){
+    const city=weatherMatch[1].trim()||'Istanbul';
+    const w=await getWeather(city);
+    if(w){
+      addMsg('user',txt);
+      S.history.push({role:'user',parts:[{text:txt}]});
+      D.inp.value='';updateChar();
+      const wHtml=`<div class="weather-widget"><div class="weather-icon">${w.icon}</div><div class="weather-info"><div class="weather-temp">${w.temp}°C</div><div class="weather-desc">${w.desc}</div><div class="weather-city">📍 ${w.city}</div></div></div>`;
+      const wText=`${w.city} için hava durumu: ${w.temp}°C, ${w.desc} ${w.icon}`;
+      addMsgHTML('assistant',wHtml,wText);
+      S.history.push({role:'model',parts:[{text:wText}]});
+      if(S.cfg.autoSpk)await speak(wText);
+      return;
+    }
+  }
+
+  addMsg('user',txt);
+  S.history.push({role:'user',parts:buildParts(txt)});
+  D.inp.value='';D.inp.style.height='auto';updateChar();clearFiles();
+
+  S.thinking=true;D.sendBtn.disabled=true;setStatus('Düşünüyor...','thinking');
+  const tid=addTyping();
+
+  try{
+    const reply=await callGemini();
+    removeTyping(tid);
+    const cr=await handleCommand(reply);
+    const dr=cr||reply;
+    addMsg('assistant',dr);
+    S.history.push({role:'model',parts:[{text:dr}]});
+    addHist(txt);
+    if(S.cfg.autoSpk)await speak(dr);
+    setStatus('Hazır');
+  }catch(e){
+    removeTyping(tid);
+    addMsg('assistant','❌ Hata: '+e.message,true);
+    setStatus('Hata','error');
+    toast('❌ '+e.message,'error');
+    setTimeout(()=>setStatus('Hazır'),3000);
+  }
+  S.thinking=false;D.sendBtn.disabled=false;
+}
+
+function buildParts(text){
+  if(S.files.length===0)return[{text}];
+  const parts=[];
+  for(const f of S.files){
+    if(f.isImage){parts.push({inline_data:{mime_type:f.type,data:f.data.split(',')[1]}});}
+    else{parts.push({text:'📄 Dosya: '+f.name+'\n'+f.content});}
+  }
+  parts.push({text:text||'Bu dosyayı/fotoğrafı analiz et.'});
+  return parts;
+}
+
+// ===== GEMİNİ API =====
+async function callGemini(modelIdx=0){
+  const sys=(S.cfg.sysOv||SYS)+(MODE_EXTRA[S.mode]||'');
+  const msgs=S.history.slice(-40);
+  const model=GEMINI_MODELS[Math.min(modelIdx,GEMINI_MODELS.length-1)];
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+  const body={system_instruction:{parts:[{text:sys}]},contents:msgs,generationConfig:{temperature:0.8,maxOutputTokens:1024}};
+  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!res.ok){
+    const e=await res.json().catch(()=>({}));
+    if(res.status===429){if(modelIdx<GEMINI_MODELS.length-1){await sleep(1000);return callGemini(modelIdx+1);}setStatus('Limit, bekleniyor...','thinking');await sleep(5000);return callGemini(0);}
+    if(res.status===400&&modelIdx<GEMINI_MODELS.length-1)return callGemini(modelIdx+1);
+    throw new Error(e?.error?.message||'Gemini hatası: '+res.status);
+  }
+  const data=await res.json();
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text||'(Boş yanıt)';
+}
+
+// ===== MİKROFON =====
+function startMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('❌ Chrome kullanın','error');return;}
+  const r=new SR();r.lang='tr-TR';r.interimResults=true;r.continuous=false;
+  S.recog=r;S.recording=true;
+  D.voiceOv.classList.remove('hidden');D.vTrans.textContent='';
+  D.micBtn.classList.add('recording');setStatus('Dinliyorum...','speaking');
+  r.onresult=e=>{let interim='',final='';for(const res of e.results){if(res.isFinal)final+=res[0].transcript;else interim+=res[0].transcript;}D.vTrans.textContent=final||interim;if(final){D.inp.value=final;updateChar();}};
+  r.onend=()=>{D.voiceOv.classList.add('hidden');D.micBtn.classList.remove('recording');S.recording=false;S.recog=null;if(D.inp.value.trim())send();else setStatus('Hazır');};
+  r.onerror=e=>{D.voiceOv.classList.add('hidden');D.micBtn.classList.remove('recording');S.recording=false;S.recog=null;if(e.error!=='no-speech')toast('🎙️ Hata: '+e.error,'error');setStatus('Hazır');};
+  r.start();
+}
 function stopMic(){if(S.recog)S.recog.stop();D.voiceOv.classList.add('hidden');D.micBtn.classList.remove('recording');S.recording=false;}
-async function speak(text){if(!S.cfg.elKey)return;const clean=text.replace(/```[\s\S]*?```/g,'Kod bloğu.').replace(/`[^`]+`/g,'').replace(/#+\s+/g,'').replace(/\*\*([^*]+)\*\*/g,'$1').replace(/\*([^*]+)\*/g,'$1').replace(/\n+/g,' ').trim().slice(0,5000);if(!clean)return;stopAudioFn(false);S.speaking=true;setStatus('Konuşuyor...','speaking');D.audioBar.classList.remove('hidden');try{const res=await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${S.cfg.elVoice||'21m00Tcm4TlvDq8ikWAM'}`,{method:'POST',headers:{'Content-Type':'application/json','xi-api-key':S.cfg.elKey},body:JSON.stringify({text:clean,model_id:'eleven_multilingual_v2',voice_settings:{stability:0.45,similarity_boost:0.82,style:0.25,use_speaker_boost:true}})});if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e?.detail?.message||e?.detail||'ElevenLabs '+res.status);}const blob=await res.blob();const url=URL.createObjectURL(blob);const audio=new Audio(url);S.audio=audio;await new Promise((res,rej)=>{audio.onended=()=>{URL.revokeObjectURL(url);res();};audio.onerror=()=>{URL.revokeObjectURL(url);rej();};audio.play().catch(rej);});}catch(e){toast('🔊 TTS: '+e.message,'error');}finally{S.speaking=false;S.audio=null;D.audioBar.classList.add('hidden');if(!S.thinking)setStatus('Hazır');}}
-function stopAudioFn(status=true){if(S.audio){S.audio.pause();S.audio=null;}S.speaking=false;D.audioBar.classList.add('hidden');if(status)setStatus('Hazır');}
-function updateTTSBtn(){D.ttsBtn.classList.toggle('enabled',S.cfg.autoSpk!==false);D.ttsBtn.title=S.cfg.autoSpk!==false?'Otomatik ses AÇIK':'Otomatik ses KAPALI';}
-function toggleTTS(){S.cfg.autoSpk=!S.cfg.autoSpk;localStorage.setItem('nova_free_cfg',JSON.stringify(S.cfg));updateTTSBtn();toast(S.cfg.autoSpk?'🔊 Otomatik ses açık':'🔇 Otomatik ses kapalı','info');}
-function addMsg(role,content,isErr=false){const el=document.createElement('div');el.className='msg '+role;const av=document.createElement('div');av.className='msg-av';av.textContent=role==='user'?'👤':'◆';const body=document.createElement('div');body.className='msg-body';const lbl=document.createElement('div');lbl.className='msg-role';lbl.textContent=role==='user'?'SİZ':'NOVA';const txt=document.createElement('div');txt.className='msg-text';if(isErr)txt.style.color='var(--danger)';if(role==='assistant'&&!isErr)txt.innerHTML=md(content);else txt.textContent=content;body.append(lbl,txt);if(role==='assistant'&&!isErr){const acts=document.createElement('div');acts.className='msg-acts';const cp=mkBtn('📋 Kopyala',()=>{navigator.clipboard.writeText(content);toast('✓ Kopyalandı','success');});const sp=mkBtn('🔊 Seslendir',()=>speak(content));acts.append(cp,sp);body.appendChild(acts);}el.append(av,body);D.msgs.appendChild(el);scroll();}
+
+// ===== TTS =====
+async function speak(text){
+  const clean=text.replace(/```[\s\S]*?```/g,'').replace(/[#*`]/g,'').replace(/\n+/g,' ').trim().slice(0,1000);
+  if(!clean)return;
+  stopAudioFn(false);S.speaking=true;setStatus('Konuşuyor...','speaking');D.audioBar.classList.remove('hidden');
+
+  // ElevenLabs varsa kullan
+  if(S.cfg.elKey&&S.cfg.elVoice){
+    try{
+      const res=await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${S.cfg.elVoice}`,{method:'POST',headers:{'Content-Type':'application/json','xi-api-key':S.cfg.elKey},body:JSON.stringify({text:clean,model_id:'eleven_multilingual_v2',voice_settings:{stability:0.5,similarity_boost:0.8}})});
+      if(res.ok){const blob=await res.blob();const url=URL.createObjectURL(blob);const audio=new Audio(url);S.audio=audio;await new Promise((res,rej)=>{audio.onended=()=>{URL.revokeObjectURL(url);res();};audio.onerror=()=>rej();audio.play().catch(rej);});S.speaking=false;S.audio=null;D.audioBar.classList.add('hidden');if(!S.thinking)setStatus('Hazır');return;}
+    }catch(e){}
+  }
+
+  // Tarayıcı TTS
+  await new Promise(resolve=>{
+    window.speechSynthesis.cancel();
+    const utt=new SpeechSynthesisUtterance(clean);
+    utt.lang='tr-TR';utt.rate=1.0;utt.pitch=1.0;
+    const voices=speechSynthesis.getVoices();
+    const trVoice=voices.find(v=>v.lang.startsWith('tr'))||voices[0];
+    if(trVoice)utt.voice=trVoice;
+    utt.onend=()=>resolve();utt.onerror=()=>resolve();
+    S.audio={pause:()=>speechSynthesis.cancel()};
+    speechSynthesis.speak(utt);
+  });
+  S.speaking=false;S.audio=null;D.audioBar.classList.add('hidden');if(!S.thinking)setStatus('Hazır');
+}
+
+function stopAudioFn(status=true){
+  if(S.audio){S.audio.pause();S.audio=null;}
+  window.speechSynthesis?.cancel();
+  S.speaking=false;D.audioBar.classList.add('hidden');
+  if(status)setStatus('Hazır');
+}
+function updateTTSBtn(){D.ttsBtn.classList.toggle('enabled',S.cfg.autoSpk!==false);}
+function toggleTTS(){S.cfg.autoSpk=!S.cfg.autoSpk;localStorage.setItem('nova_cfg_v4',JSON.stringify(S.cfg));updateTTSBtn();toast(S.cfg.autoSpk?'🔊 Ses açık':'🔇 Ses kapalı','info');}
+
+// ===== DOSYA YÜKLEMESİ =====
+function handleFiles(files){
+  for(const file of files){
+    const isImage=file.type.startsWith('image/');
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const fd={name:file.name,type:file.type,isImage,data:isImage?e.target.result:null,content:isImage?null:e.target.result};
+      S.files.push(fd);
+      const div=document.createElement('div');div.className='file-thumb';
+      if(isImage){const img=document.createElement('img');img.src=fd.data;div.appendChild(img);}
+      else{const ico=document.createElement('span');ico.textContent='📄';div.appendChild(ico);}
+      const nm=document.createElement('span');nm.textContent=file.name.slice(0,18);nm.style.overflow='hidden';div.appendChild(nm);
+      const del=document.createElement('button');del.className='file-del';del.textContent='✕';del.onclick=()=>{S.files=S.files.filter(f=>f!==fd);div.remove();if(S.files.length===0)D.filePreview.style.display='none';};div.appendChild(del);
+      D.filePreview.style.display='flex';D.filePreview.appendChild(div);
+    };
+    if(isImage)reader.readAsDataURL(file);else reader.readAsText(file);
+  }
+}
+function clearFiles(){S.files=[];D.filePreview.innerHTML='';D.filePreview.style.display='none';}
+
+// ===== MESAJ UI =====
+function addMsg(role,content,isErr=false){
+  const el=document.createElement('div');el.className='msg '+role;
+  const av=document.createElement('div');av.className='msg-av';av.textContent=role==='user'?'👤':'◆';
+  const body=document.createElement('div');body.className='msg-body';
+  const lbl=document.createElement('div');lbl.className='msg-role';lbl.textContent=role==='user'?'SİZ':'NOVA';
+  const txt=document.createElement('div');txt.className='msg-text';
+  if(isErr)txt.style.color='var(--danger)';
+  if(role==='assistant'&&!isErr)txt.innerHTML=md(content);
+  else txt.textContent=content;
+  body.append(lbl,txt);
+  if(role==='assistant'&&!isErr){
+    const acts=document.createElement('div');acts.className='msg-acts';
+    acts.append(mkBtn('📋 Kopyala',()=>{navigator.clipboard.writeText(content);toast('✓ Kopyalandı','success');}),mkBtn('🔊 Seslendir',()=>speak(content)));
+    body.appendChild(acts);
+  }
+  el.append(av,body);D.msgs.appendChild(el);scroll();
+}
+
+function addMsgHTML(role,html,plainText){
+  const el=document.createElement('div');el.className='msg '+role;
+  const av=document.createElement('div');av.className='msg-av';av.textContent='◆';
+  const body=document.createElement('div');body.className='msg-body';
+  const lbl=document.createElement('div');lbl.className='msg-role';lbl.textContent='NOVA';
+  const txt=document.createElement('div');txt.className='msg-text';txt.innerHTML=html;
+  body.append(lbl,txt);
+  const acts=document.createElement('div');acts.className='msg-acts';
+  acts.append(mkBtn('🔊 Seslendir',()=>speak(plainText)));
+  body.appendChild(acts);
+  el.append(av,body);D.msgs.appendChild(el);scroll();
+}
+
 function mkBtn(lbl,fn){const b=document.createElement('button');b.className='act-btn';b.textContent=lbl;b.onclick=fn;return b;}
 function addTyping(){const id='ty'+Date.now();const el=document.createElement('div');el.id=id;el.className='msg assistant';el.innerHTML='<div class="msg-av">◆</div><div class="msg-body"><div class="msg-role">NOVA</div><div class="typing"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>';D.msgs.appendChild(el);scroll();return id;}
 function removeTyping(id){const e=$(id);if(e)e.remove();}
 function scroll(){D.chatWrap.scrollTo({top:D.chatWrap.scrollHeight,behavior:'smooth'});}
-function md(t){let h=esc(t);h=h.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,l,c)=>`<pre><code>${c.trim()}</code></pre>`);h=h.replace(/`([^`\n]+)`/g,'<code>$1</code>');h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');h=h.replace(/^## (.+)$/gm,'<h2>$1</h2>');h=h.replace(/^# (.+)$/gm,'<h1>$1</h1>');h=h.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>');h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');h=h.replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>');h=h.replace(/(^[•\-\*\+] .+$\n?)+/gm,m=>`<ul>${m.trim().split('\n').map(l=>`<li>${l.replace(/^[•\-\*\+] /,'')}</li>`).join('')}</ul>`);h=h.replace(/(^\d+\. .+$\n?)+/gm,m=>`<ol>${m.trim().split('\n').map(l=>`<li>${l.replace(/^\d+\. /,'')}</li>`).join('')}</ol>`);h=h.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" style="color:var(--accent)">$1</a>');h=h.replace(/\n\n+/g,'</p><p>');h='<p>'+h+'</p>';h=h.replace(/<p>\s*<\/p>/g,'');h=h.replace(/\n/g,'<br>');return h;}
+
+// ===== MARKDOWN =====
+function md(t){let h=esc(t);h=h.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,l,c)=>`<pre><code>${c.trim()}</code></pre>`);h=h.replace(/`([^`\n]+)`/g,'<code>$1</code>');h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');h=h.replace(/^## (.+)$/gm,'<h2>$1</h2>');h=h.replace(/^# (.+)$/gm,'<h1>$1</h1>');h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');h=h.replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>');h=h.replace(/(^[•\-\*\+] .+$\n?)+/gm,m=>`<ul>${m.trim().split('\n').map(l=>`<li>${l.replace(/^[•\-\*\+] /,'')}</li>`).join('')}</ul>`);h=h.replace(/(^\d+\. .+$\n?)+/gm,m=>`<ol>${m.trim().split('\n').map(l=>`<li>${l.replace(/^\d+\. /,'')}</li>`).join('')}</ol>`);h=h.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" style="color:var(--accent)">$1</a>');h=h.replace(/\n\n+/g,'</p><p>');h='<p>'+h+'</p>';h=h.replace(/<p>\s*<\/p>/g,'');h=h.replace(/\n/g,'<br>');return h;}
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 function addHist(msg){const empty=D.histList.querySelector('.hist-empty');if(empty)empty.remove();if(D.histList.querySelector(`[data-sid="${S.sid}"]`))return;const item=document.createElement('div');item.className='hist-item';item.dataset.sid=S.sid;item.textContent=msg.slice(0,50)+(msg.length>50?'…':'');D.histList.prepend(item);}
-function newChat(){S.history=[];S.sid=Date.now();D.msgs.innerHTML='';D.welcome.classList.remove('hidden');stopAudioFn();setStatus('Hazır');toast('✓ Yeni sohbet','success');}
-function setMode(m){S.mode=m;document.querySelectorAll('.mpill,.nav-item').forEach(e=>e.classList.toggle('active',e.dataset.mode===m));const lbls={chat:'Sohbet',research:'Araştırma',code:'Kod',analyze:'Analiz'};D.modeLbl.textContent='Mod: '+(lbls[m]||m);D.inp.placeholder={chat:"NOVA'ya bir şeyler sorun...",research:'Araştırılacak konuyu yazın...',code:'Kodlanacak şeyi tanımlayın...',analyze:'Analiz edilecek konuyu yazın...'}[m];}
+function newChat(){S.history=[];S.sid=Date.now();D.msgs.innerHTML='';D.welcome.classList.remove('hidden');clearFiles();stopAudioFn();setStatus('Hazır');toast('✓ Yeni sohbet','success');}
+function setMode(m){S.mode=m;document.querySelectorAll('.mpill,.nav-item').forEach(e=>e.classList.toggle('active',e.dataset.mode===m));D.modeLbl.textContent='Mod: '+{chat:'Sohbet',research:'Araştırma',code:'Kod',analyze:'Analiz'}[m];}
 function updateChar(){const l=D.inp.value.length;D.charCnt.textContent=l+' / 10000';D.charCnt.style.color=l>9000?'var(--danger)':'';}
 function autoResize(){D.inp.style.height='auto';D.inp.style.height=Math.min(D.inp.scrollHeight,160)+'px';updateChar();}
 function toast(msg,type='info'){const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;D.toasts.appendChild(t);setTimeout(()=>{t.style.cssText='opacity:0;transform:translateX(20px);transition:all .3s';setTimeout(()=>t.remove(),300);},3200);}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// ===== EVENTS =====
 D.sendBtn.addEventListener('click',()=>send());
 D.inp.addEventListener('input',autoResize);
 D.inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
@@ -354,6 +621,8 @@ D.micBtn.addEventListener('click',()=>{if(S.recording)stopMic();else startMic();
 D.vStop.addEventListener('click',stopMic);
 D.ttsBtn.addEventListener('click',toggleTTS);
 D.stopAudio.addEventListener('click',()=>stopAudioFn(true));
+D.fileBtn.addEventListener('click',()=>D.fileInp.click());
+D.fileInp.addEventListener('change',e=>handleFiles(e.target.files));
 D.sbTog.addEventListener('click',()=>D.sidebar.classList.toggle('collapsed'));
 D.menuBtn.addEventListener('click',()=>D.sidebar.classList.toggle('collapsed'));
 D.setBtn.addEventListener('click',openSet);
@@ -365,6 +634,11 @@ D.clrBtn.addEventListener('click',()=>{if(confirm('Sohbeti temizle?'))newChat();
 document.querySelectorAll('.mpill,.nav-item').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
 document.querySelectorAll('.sugg-card').forEach(c=>c.addEventListener('click',()=>send(c.dataset.p)));
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();newChat();}if(e.key==='Escape'){closeSet();stopMic();}});
+
+// Sürükle bırak dosya
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer.files.length)handleFiles(e.dataTransfer.files);});
+
 boot();
 </script>
 </body>
